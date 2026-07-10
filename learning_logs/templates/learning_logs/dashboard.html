@@ -1,0 +1,45 @@
+{% extends 'learning_logs/base.html' %}
+
+
+{% block page_header %}
+<h1>Dashboard</h1>
+{% endblock page_header %}
+
+
+{% block content %}
+
+<div class="card mb-3">
+  <div class="card-body">
+
+    <h4>Your Statistics</h4>
+
+    <p>
+      Topics:
+      <strong>{{ topic_count }}</strong>
+    </p>
+
+    <p>
+      Entries Written:
+      <strong>{{ entry_count }}</strong>
+    </p>
+
+    <p>
+      Excess To Members:
+      <strong>{{ member_count }}</strong>
+    </p>
+
+
+    {% if most_active_topic %}
+    <p>
+      Most Active Topic:
+      <a href="{% url 'learning_logs:topic' most_active_topic.id %}">
+        {{ most_active_topic.text }}
+      </a>
+    </p>
+    {% endif %}
+
+
+  </div>
+</div>
+
+{% endblock content %}

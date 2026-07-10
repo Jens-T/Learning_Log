@@ -10,65 +10,151 @@
   {% bootstrap_javascript %}
 
 </head>
+
 <body>
 
-  <nav class="navbar navbar-expand-md navbar-light bg-light mb-4 border">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'learning_logs:index' %}">
-        Learning Log</a>
-      <button class="navbar_toggler" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navbarCollapse" aria_controls="navbarCollapse"
-        aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggle-icon"></span>
-      </button>
+<nav class="navbar navbar-expand-md navbar-light bg-light mb-4 border">
+  <div class="container-fluid">
 
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+    <a class="navbar-brand" href="{% url 'learning_logs:index' %}">
+      Learning Log
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+
+
+      <!-- Linkerkant -->
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        
+        {% if user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'learning_logs:topics' %}">
-              Topics</a></li>
-        </ul> <!-- End of links on left side of navbar -->
+              Topics
+            </a>
+          </li>
 
-        <!-- Account-related links -->
-        <ul class="navbar-nav ms-auto mb-2 mb-md-0">
 
-          {% if user.is_authenticated %}
-            <li class="nav-item">
-              <span class="navbar-text me-2">Hello, {{ user.username }}.
-                </span></li>
-          {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:register' %}">
-                  Register</a></li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:login' %}">
-                  Log in</a></li>
-          {% endif %}
+        
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'learning_logs:dashboard' %}">
+              Dashboard
+            </a>
+          </li>
+        
 
-        </ul> <!-- End of account-related links -->
 
-        {% if user.is_authenticated %}
-          <form action="{% url 'accounts:logout' %}" method='post'>
-            {% csrf_token %}
-            <button name='submit' class='btn btn-outline-secondary btn-sm'>
-              Log out</button>
-          </form>
+          <li class="nav-item">
+              <a class="nav-link {% if unread_notifications_count %}fw-bold{% endif %}" 
+                 href="{% url 'learning_logs:notifications' %}">
+                Notifications
+
+                {% if unread_notifications %}
+                  <span class="badge bg-danger">
+                  {{ unread_notifications }}
+                  </span>
+                  {% endif %}
+
+              </a>
+            </li>
+
         {% endif %}
 
-      </div> <!-- Closes collapsible parts of navbar -->
+      </ul>
 
-    </div> <!-- Closes navbar's container -->
-  </nav> <!-- End of navbar -->
 
-  <main class="container">
-    <div class="pb-2 mb-2 border-bottom">
-      {% block page_header %}{% endblock page_header %}
+
+      <!-- Rechterkant -->
+      <ul class="navbar-nav ms-auto align-items-center">
+
+
+        {% if user.is_authenticated %}
+
+
+          <li class="nav-item">
+            <span class="navbar-text me-3">
+              Hello, {{ user.username }}
+            </span>
+          </li>
+
+
+          <li class="nav-item">
+            <form action="{% url 'accounts:logout' %}" method="post">
+              {% csrf_token %}
+              <button class="btn btn-outline-secondary btn-sm">
+                Log out
+              </button>
+            </form>
+          </li>
+
+
+        {% else %}
+
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:register' %}">
+              Register
+            </a>
+          </li>
+
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:login' %}">
+              Log in
+            </a>
+          </li>
+
+
+        {% endif %}
+
+
+      </ul>
+
+
     </div>
 
-    <div>
-      {% block content %}{% endblock content %}
-    </div>
-  </main>
+  </div>
+</nav>
+
+{% if user.is_authenticated and unread_notifications_count %}
+  <div class="alert alert-info alert-dismissible fade show">
+
+  You have new notifications!
+
+  <a href="{% url 'learning_logs:notifications' %}">
+  See notifications
+  </a>
+
+  <button type="button"
+  class="btn-close"
+  data-bs-dismiss="alert">
+  </button>
+
+  </div>
+{% endif %}
+
+<main class="container">
+
+  <div class="pb-2 mb-2 border-bottom">
+    {% block page_header %}
+    {% endblock page_header %}
+  </div>
+
+
+  <div>
+    {% block content %}
+    {% endblock content %}
+  </div>
+
+
+</main>
+
 
 </body>
 </html>

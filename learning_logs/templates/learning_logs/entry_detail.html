@@ -1,0 +1,91 @@
+{% extends 'learning_logs/base.html' %}
+
+
+{% block page_header %}
+
+<h1>
+{{ entry.topic.text }}
+</h1>
+
+{% endblock page_header %}
+
+
+
+{% block content %}
+
+
+<div class="card">
+
+<div class="card-header">
+
+{{ entry.date_added }}
+
+</div>
+
+
+<div class="card-body">
+
+<p>
+{{ entry.text|linebreaks }}
+</p>
+
+
+<small>
+Geschreven door:
+<strong>
+{{ entry.author.username }}
+</strong>
+</small>
+
+
+<hr>
+
+
+<h4>
+Reacties
+</h4>
+
+
+{% for comment in comments %}
+
+<div class="border rounded p-2 mb-2">
+
+<strong>
+{{ comment.author.username }}
+</strong>
+
+<small>
+{{ comment.date_added }}
+</small>
+
+
+<p>
+{{ comment.text }}
+</p>
+
+
+</div>
+
+
+{% empty %}
+
+<p>
+Nog geen reacties.
+</p>
+
+
+{% endfor %}
+
+
+<a class="btn btn-primary"
+href="{% url 'learning_logs:add_comment' entry.id %}">
+Reageer
+</a>
+
+
+</div>
+
+</div>
+
+
+{% endblock content %}

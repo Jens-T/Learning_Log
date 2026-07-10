@@ -5,17 +5,84 @@
 {% endblock page_header %}
 
 {% block content %}
+  <form method="get" class="mb-3">
 
-  <ul class="list-group border-bottom pb-2 mb-4">
-    {% for topic in topics %}
-      <li class="list-group-item border-0">
-        <a href="{% url 'learning_logs:topic' topic.id %}">
-          {{ topic.text }}</a>
-      </li>
-    {% empty %}
-      <li class="list-group-item border-0">No topics have been added yet.</li>
-    {% endfor %}
-  </ul>
+    <div class="input-group">
+
+      <input 
+        type="text"
+        name="search"
+        class="form-control"
+        placeholder="Zoek topics..."
+      >
+
+      <button class="btn btn-primary">
+        Search
+      </button>
+
+    </div>
+
+  </form>
+
+  <div class="mb-3">
+
+    <strong>Sort:</strong>
+
+    <a class="btn btn-outline-primary"
+      href="?sort=members">
+      Members
+    </a>
+
+    <a class="btn btn-outline-primary"
+      href="?sort=entries">
+      Entries
+    </a>
+
+    <a class="btn btn-outline-primary"
+      href="?sort=date">
+      Date
+    </a>
+
+  </div>
+
+  {% for topic in topics %}
+
+    <div class="card mb-3">
+
+      <div class="card-header">
+        <h3>
+          <a href="{% url 'learning_logs:topic' topic.id %}">
+            {{ topic.text }}
+          </a>
+        </h3>
+      </div>
+
+      <div class="card-body">
+
+        <p>
+          Owner:
+          <strong>{{ topic.owner.username }}</strong>
+        </p>
+
+        <p>
+          Entries:
+          {{ topic.entry_count }}
+        </p>
+
+        <p>
+          Members:
+          {{ topic.member_count }}
+        </p>
+
+      </div>
+
+    </div>
+
+{% empty %}
+
+<p>No topics have been added yet.</p>
+
+{% endfor %}
 
   <a href="{% url 'learning_logs:new_topic' %}">Add a new topic</a>
 

@@ -2,24 +2,128 @@
 
 {% block page_header %}
   <h1>{{ topic.text }}</h1>
+
+  {% if topic.owner == request.user %}
+    <p>
+        <a href="{% url 'learning_logs:add_member' topic.id %}">
+            Add member
+        </a>
+    </p>
+  {% endif %}
+
+  <p>Owner: {{ topic.owner.username }}</p>
+
+  <h3>Members</h3>
+  <ul>
+
+    <li>
+      {% if topic.owner == request.user %}
+        <strong>{{ topic.owner.username }} (you)</strong>
+      {% else %}
+        {{ topic.owner.username }}
+      {% endif %}
+
+      (owner)
+    </li>
+
+    {% for member in topic.topicmember_set.all %}
+    <li>
+      {% if member.user == request.user %}
+        <strong>{{ member.user.username }} (you)</strong>
+      {% else %}
+        {{ member.user.username }}
+      {% endif %}
+
+      {% if member.permission == 'edit' %}
+        (edit)
+      {% else %}
+        (view)
+      {% endif %}
+
+      {% if topic.owner == request.user %}
+        <a href="{% url 'learning_logs:remove_member' topic.id member.id %}">
+          remove
+        </a>
+      {% endif %}
+    </li>
+    {% endfor %}
+
+
+  </ul>
 {% endblock page_header %}
+
+
 
 {% block content %}
 
-  <p>
-    <a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a>
-  </p>
+  {% if can_edit %}
+    <p>
+      <a href="{% url 'learning_logs:new_entry' topic.id %}">
+        Add new entry
+      </a>
+    </p>
+  {% endif %}
 
   {% for entry in entries %}
     <div class="card mb-3">
       <!-- Card header with timestamp and edit link -->
       <h4 class="card-header">
         {{ entry.date_added|date:'M d, Y H:i' }}
-        <small><a href="{% url 'learning_logs:edit_entry' entry.id %}">
-          edit entry</a></small>
+          {% if can_edit %}
+            <small>
+              <a href="{% url 'learning_logs:edit_entry' entry.id %}">edit entry</a>
+            </small>
+          {% endif %}
       </h4>
       <!-- Card body with entry text -->
-      <div class="card-body">{{ entry.text|linebreaks }}</div>
+      <div class="card-body">
+
+        <p>
+          {{ entry.text|linebreaks }}
+        </p>
+
+        <small>
+          Written by:
+          <strong>{{ entry.author.username }}</strong>
+        </small>
+
+
+        <hr>
+
+        <h5>Comments</h5>
+        <a href="{% url 'learning_logs:add_comment' entry.id %}" class="btn btn-outline-primary btn-sm">React</a>
+
+      </div>
+
+
+        {% for comment in entry.comment_set.all %}
+
+          <div class="border rounded p-2 mb-2">
+
+            <strong>
+              {{ comment.author.username }}
+            </strong>
+
+            <small>
+              {{ comment.date_added|date:'M d, Y H:i' }}
+            </small>
+
+            <p>
+              {{ comment.text }}
+            </p>
+
+          </div>
+
+        {% empty %}
+
+          <p class="ms-3">
+            No comments yet.
+          </p>
+
+        {% endfor %}
+
+
+      </div>
     </div>
   {% empty %}
     <p>There are no entries for this topic yet.</p>

@@ -1,0 +1,38 @@
+{% extends 'learning_logs/base.html' %}
+
+{% block page_header %}
+<h1>Notifications</h1>
+{% endblock page_header %}
+
+
+{% block content %}
+
+{% for notification in notifications %}
+
+<div class="card mb-2 p-3">
+
+    {% if notification.entry %}
+
+        <a href="{% url 'learning_logs:entry_detail' notification.entry.id %}">
+            {{ notification.message }}
+        </a>
+
+    {% else %}
+
+        {{ notification.message }}
+
+    {% endif %}
+
+    <small class="text-muted">
+        {{ notification.created_at }}
+    </small>
+
+</div>
+
+{% empty %}
+
+<p>No notifications yet.</p>
+
+{% endfor %}
+
+{% endblock content %}

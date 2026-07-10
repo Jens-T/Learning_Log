@@ -1,0 +1,16 @@
+{% extends "learning_logs/base.html" %}
+
+{% block content %}
+
+<h2>Add member to {{ topic.text }}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button name="submit">
+        Add member
+    </button>
+</form>
+
+{% endblock content %}
