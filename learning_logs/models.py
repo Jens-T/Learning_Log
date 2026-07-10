@@ -20,3 +20,19 @@ class Entry(models.Model):
 
     def __str__(self):
         return f"{self.text[:50]}..." 
+    
+class TopicMember(models.Model):
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    permission = models.CharField(
+        max_length=10,
+        choices=[
+            ('view', 'View only'),
+            ('edit', 'Can edit'),
+        ],
+        default='view'
+    )
+
+    def __str__(self):
+        return f"{self.user.username} - {self.topic.text}"
